@@ -7118,12 +7118,12 @@ async function run(){
 
 function getOpeningMustacheTag(){
   const customTag = core.getInput("openingTag", {required: false})
-  return customTag ?? "{{";
+  return customTag ? customTag : "{{";
 }
 
 function getClosingMustacheTag(){
   const customTag = core.getInput("closingTag", {required: false})
-  return customTag ?? "}}";
+  return customTag ? customTag : "}}";
 }
 
 function getCustomInput(){
