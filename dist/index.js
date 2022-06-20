@@ -7070,6 +7070,12 @@ async function run(){
       // custom data to render besides pull_request context
       const customInput = getCustomInput();
 
+      // replacement for {{ opening tag
+      const openingTag = getOpeningMustacheTag();
+
+      // replacement for }} closing tag
+      const closingTag = getClosingMustacheTag();
+
       // Get the JSON webhook payload for the event that triggered the workflow
       const payload = JSON.stringify(github.context.payload, undefined, 2)
       //core.info(`The event payload: ${payload}`);
@@ -7080,13 +7086,14 @@ async function run(){
       core.info(`Pull request title: ${pr.title}`);
       if(customInput){
         Object.entries(customInput).forEach(([key, value]) => {
-          core.info(`Custom Property {{ custom.${key} }} will render ${value}`);
+          core.info(`Custom Property ${openingTag} custom.${key} ${closingTag} will render ${value}`);
         })
       }
 
 
       const viewData = {...pr, custom:customInput}
 
+      mustache.tags = [openingTag,closingTag]
       // update PR body
       const octokit = github.getOctokit(ghToken);
       const request = {
@@ -7107,6 +7114,16 @@ async function run(){
     } catch (error) {
       core.setFailed(error.message);
     }
+}
+
+function getOpeningMustacheTag(){
+  const customTag = core.getInput("openingTag", {required: false})
+  return customTag ?? "{{";
+}
+
+function getClosingMustacheTag(){
+  const customTag = core.getInput("closingTag", {required: false})
+  return customTag ?? "}}";
 }
 
 function getCustomInput(){
