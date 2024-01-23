@@ -1,4 +1,4 @@
-name: 'Dynamic Template'
+name: 'Dynamic Templating Via Mustache'
 description: 'Adds dynamic template tags to GitHub PR body'
 inputs:
   token:
